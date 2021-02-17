@@ -11,7 +11,7 @@ for ii = 1:length(sub_dirs);
     % Use the flirted FA image! If you I already ran flirt on all the FA images during probtrackx and it is saved to a flirt directory in each subject directory.
     
     FAfilename = char(strcat('flirt/', sub_dirs(ii), '_dfit_FA_flirt.nii.gz'));
-    dtiMakeDt6FromFsl([b0filename], [FAfilename]);
+    dtiMakeDt6FromFsl([b0filename], [FAfilename], [dt6.mat]);
     cd ..
     end
 end
