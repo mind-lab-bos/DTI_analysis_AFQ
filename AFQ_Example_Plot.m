@@ -41,5 +41,5 @@ AFQ_RenderRoi(roi1,[0 0 .7]);
 AFQ_RenderRoi(roi2,[0 0 .7]);
 
 % Add the slice x=-15 from the subject's b=0 image
-b0 = readFileNifti(dt.files.b0);
+b0 = readFileNifti('/work/mindlab/Projects/fitkids2mus/matlabprograms/original_data/sub139_1/sub139_1_dfit_S0.nii.gz');
 AFQ_AddImageTo3dPlot(b0,[-15,0,0]);
