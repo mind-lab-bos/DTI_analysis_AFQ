@@ -13,7 +13,7 @@ for ii = 1:length(sub_dirs);
     else
         b0filename = char(strcat(sub_dirs(ii), '_dfit_S0.nii.gz'));
         FAfilename = char(strcat(sub_dirs(ii), '_dfit_FA.nii.gz'));
-        dtiMakeDt6FromFsl([b0filename], [FAfilename]);
+        dtiMakeDt6FromFsl([b0filename], [FAfilename], [dt6filename]);
         cd ..
     end
 end
