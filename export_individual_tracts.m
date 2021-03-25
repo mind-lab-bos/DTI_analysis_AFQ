@@ -25,6 +25,9 @@ for ss = 1:length(sub_dirs);
     cd (char(strcat(sub_dirs(ss))));
     save(sub_dirs{ss}, 'TractProfile');
     
+    % Remove empty tracts from TractProfile and fg for each subject
+    % Write to fg_nonemptytracts and TractProfile_nonemptytracts for each subject
+    % Save noemptytracts variables to subject folder
     emptytracts=[];
     for ii=1:numel(TractProfile)
         if isempty(TractProfile(ii).nfibers)
@@ -38,8 +41,11 @@ for ss = 1:length(sub_dirs);
     fg_nonemptytracts(emptytracts)=[];     
     save(sub_dirs{ss}, 'TractProfile_nonemptytracts');
     save(sub_dirs{ss}, 'fg_nonemptytracts');
+    
+    % Make directory for images for each subject
     mkdir images
-        
+    
+    % For each non-empty tract, render fibers    
     for jj = 1:numel(TractProfile_nonemptytracts)
     
         % The hot colormap is a good one because it will allow us to make regions
@@ -50,7 +56,7 @@ for ss = 1:length(sub_dirs);
         % be white and T statistics less than 1 will be black. Obviously a T value
         % of 1 is not considered significant however in this example we only have 3
         % subjects in each group hence we use a low value just to demonstrate the
-        % proceedure.
+        % procedure.
         crange = [1 4];
         % Set the number of fibers to render. More fibers takes longer
         numfibers = 1000;
@@ -64,6 +70,8 @@ for ss = 1:length(sub_dirs);
         % Add the slice x=-15 from the subject's b=0 image
         b0 = readFileNifti('average.nii.gz');
         
+        % Get the name of the tract and check if the tract is left/right/corpus callusom tract
+        % Adjust figure camera/light accordingly based on type of tract
         name = TractProfile_nonemptytracts(jj).name
         
         if strfind(name,'Left');
@@ -83,7 +91,8 @@ for ss = 1:length(sub_dirs);
         
         end
         
-        exportgraphics(gcf, char(strcat('images/', tract_file_names(jj), '.png')));
+        # Export images with tract name as file name into the images directory
+        exportgraphics(gcf, char(strcat('images/', name, '.png')));
         close(gcf);
     end
     cd ..
