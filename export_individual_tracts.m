@@ -91,7 +91,7 @@ for ss = 1:length(sub_dirs);
         
         end
         
-        # Export images with tract name as file name into the images directory
+        % Export images with tract name as file name into the images directory
         exportgraphics(gcf, char(strcat('images/', name, '.png')));
         close(gcf);
     end
