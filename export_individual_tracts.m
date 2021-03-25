@@ -7,7 +7,7 @@ end
 
 % Load the cleaned segmented fibers for the first control subject
 for ss = 1:length(sub_dirs);
-    fg = dtiReadFibers(fullfile(sub_dir{ss},'fibers','MoriGroups_clean_D5_L4.mat'));
+    fg = dtiReadFibers(fullfile(sub_dirs{ss},'fibers','MoriGroups_clean_D5_L4.mat'));
     % Load the subject's dt6 file
     dt = dtiLoadDt6(fullfile(sub_dirs{ss},'dt6.mat'));
     % Compute Tract Profiles with 100 nodes
@@ -23,9 +23,25 @@ for ss = 1:length(sub_dirs);
     
     % Save the tract profile to the subject's directory
     cd (char(strcat(sub_dirs(ss))));
-    save(sub_dirs{ss}, 'TractProfile.mat');
+    save(sub_dirs{ss}, 'TractProfile');
     
-    for jj = 1:20
+    emptytracts=[];
+    for ii=1:numel(TractProfile)
+        if isempty(TractProfile(ii).nfibers)
+            emptytracts=[emptytracts, ii];
+        end
+    end
+        
+    TractProfile_nonemptytracts=TractProfile;
+    TractProfile_nonemptytracts(emptytracts)=[];
+    fg_nonemptytracts=fg;
+    fg_nonemptytracts(emptytracts)=[];     
+    save(sub_dirs{ss}, 'TractProfile_nonemptytracts');
+    save(sub_dirs{ss}, 'fg_nonemptytracts');
+    mkdir images
+        
+    for jj = 1:numel(TractProfile_nonemptytracts)
+    
         % The hot colormap is a good one because it will allow us to make regions
         % of the profile where p>0.05 black.
         cmap = 'hot';
@@ -41,21 +57,30 @@ for ss = 1:length(sub_dirs);
         % Render the left corticospinal tract (fibers colored light blue) with a
         % Tract Profile of T statistics. Each fiber will have a 1mm radius and the
         % tract profile will have a 6mm radius.
-        AFQ_RenderFibers(fg(jj),'color',[.8 .8 1],'tractprofile',TractProfile(jj),...
+        AFQ_RenderFibers(fg_nonemptytracts(jj),'color',[.8 .8 1],'tractprofile',TractProfile_nonemptytracts(jj),...
             'val','Tstat','numfibers',numfibers,'cmap',cmap,'crange',crange,...
             'radius',[1 6]);
         
         % Add the slice x=-15 from the subject's b=0 image
-        mkdir images
         b0 = readFileNifti('average.nii.gz');
         
-        if jj/2 == 0
+        name = TractProfile_nonemptytracts(jj).name
+        
+        if strfind(name,'Left');
             AFQ_AddImageTo3dPlot(b0,[-1,0,0]);
             view(300, 25);
+            disp 'left tract'
         
-        else
+        elseif strfind(name,'Right');
             AFQ_AddImageTo3dPlot(b0,[1,0,0]);
             view(65, 24);
+            disp 'right tract'
+            camlight('headlight')
+        
+        else
+            view(2);  
+            disp 'cc tract'    
+        
         end
         
         exportgraphics(gcf, char(strcat('images/', tract_file_names(jj), '.png')));
