@@ -10,6 +10,6 @@ DIRTOANALYZE = char(DIRTOANALYZE)
 cd(INPUTDIRPATH)
 cd(DIRTOANALYZE)
 % Initialize dtiInit parameters (rotateBvecsWithCanXform is needed for Siemens scanners) and output directory
-dwParams = dtiInitParams('rotateBvecsWithCanXform', 1, 'outDir', char(strcat(INPUTDIRPATH, '/', DIRTOANALYZE)))
+dwParams = dtiInitParams('rotateBvecsWithCanXform', 1, 'outDir', char(strcat(INPUTDIRPATH, '/', DIRTOANALYZE)), 'clobber', 1)
 % Run dtiInit with the specified .nii.gz file and acpc aligned T1 weighted file
 [dt6FileName, outBaseDir] = dtiInit([char(strcat(DIRTOANALYZE, '_dwi.nii.gz'))],['average_T1w_acpc.nii.gz'],dwParams);

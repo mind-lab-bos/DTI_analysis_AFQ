@@ -1,14 +1,13 @@
 #!/bin/bash
-#SBATCH -p short
-#SBATCH --job-name=job.DIRTOANALYZE
-#SBATCH --time=2:00:00
+#SBATCH --partition=short
+#SBATCH --job-name=dtiinit
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --output=sbatch_submissions/dtiInit/DIRTOANALYZE.output
-#SBATCH --error=sbatch_submissions/dtiInit/DIRTOANALYZE.error
+#SBATCH --output=sbatch_submissions/dtiInit/dtiInit.output
+#SBATCH --error=sbatch_submissions/dtiInit/dtiInit.error
 
 ## Specify the directory of where your scripts "live":
-scriptsDir=/work/mindlab/Projects/mci/mci_afq/scripts
+scriptsDir=/work/mindlab/Projects/mci/mci_afq/scripts/dtiInit
 
 ## OPTIONAL: create a separate input directory, where all sub??? files live, which is separate from the output files. 
 ## This may be useful for copying stuff back and forth. For now, it is set the same as "workDir":
@@ -36,7 +35,7 @@ do
 	if [ ! -d $workDir/dti128trilin ]; then
 		## search and replace a pattern within the template.bash script to create
 		## a new script that analyzes a particular directory named $i
-		sed "s/DIRTOANALYZE/$i/g;s|INPUTDIRPATH|$inputDir|g" $scriptsDir/template_dtiInit.bash > $workDir/sbatch_submissions/submit_dtiInit_$i.bash
+		sed "s/DIRTOANALYZE/$i/g;s|INPUTDIRPATH|$inputDir|g" $scriptsDir/template_dtiInit.bash > $workDir/sbatch_submissions/dtiInit/submit_dtiInit_$i.bash
 		sbatch $workDir/sbatch_submissions/dtiInit/submit_dtiInit_$i.bash
 		echo "Running dtiInit for $i"
 		sleep 1
